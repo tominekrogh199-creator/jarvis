@@ -5,7 +5,7 @@
   "type": "module",
   "description": "Jarvis – et ytre arbeidsminne som fanger alt, sorterer det og bringer det tilbake når og der du trenger det.",
   "scripts": {
-    "test": "TZ=Europe/Oslo node --test \"core/test/*.test.js\"",
+    "test": "TZ=Europe/Oslo node --test core/test/",
     "build": "node scripts/build.mjs",
     "dev": "node scripts/serve.mjs",
     "e2e": "TZ=Europe/Oslo node scripts/e2e.mjs",

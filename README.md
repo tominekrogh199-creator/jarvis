@@ -106,7 +106,7 @@ Glass bare på det som flyter (skrivefeltet, fanene, arkhodene, varsler). Innhol
 ## Kjør og test
 
 ```
-npm test            # 52 enhetstester: sortering, tider, Nå, planleggeren, agentene, jobber, comeback
+npm test            # 53 enhetstester: sortering, tider, Nå, planleggeren, agentene, jobber, comeback
 npm run build       # dist/jarvis.html og dist/jarvis-artifact.html
 npm run e2e         # hele flyten i Chromium med låst klokke, 49 sjekker, skjermbilder i screenshots/
 npm run e2e:agents  # agentene mot en falsk claude.ai med falske koblinger, 30 sjekker
