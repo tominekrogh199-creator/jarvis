@@ -1,0 +1,11 @@
+node_modules/
+.DS_Store
+# Nøkler leses lokalt og skal aldri inn i git
+app/secrets.local.js
+Secrets.xcconfig
+*.local.*
+screenshots/
+research_notes/
+shots-*/
+screenshots*/
+dist/

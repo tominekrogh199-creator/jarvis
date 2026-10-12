@@ -1,0 +1,1139 @@
+{
+ "note": "Skjemaene til Gmail- og Google Calendar-koblingene på claude.ai, lest 8. okt 2026 av en planlagt oppgave. Bare skjemaer, ingen brukerdata.",
+ "Gmail": {
+  "create_draft": {
+   "$defs": {
+    "Attachment": {
+     "description": "Represents an attachment to be included in an email.",
+     "properties": {
+      "content": {
+       "description": "Required. The base64-encoded content of the attachment.",
+       "format": "byte",
+       "type": "string"
+      },
+      "filename": {
+       "description": "Optional. The name of the file to be attached, e.g. \"invoice.pdf\". For inline attachments, this is used for Content-ID generation. For regular attachments, `filename` is used to specify the filename to email clients. If not provided, the attachment may be received with no name.",
+       "type": "string"
+      },
+      "id": {
+       "description": "Optional. Output only. When present, contains the ID of an external attachment that can be retrieved in a separate `GetMessageAttachment` request.",
+       "readOnly": true,
+       "type": "string"
+      },
+      "inline": {
+       "description": "Optional. If true, this attachment is handled as inline. An inline attachment is a content that is intended to be displayed within the body of an HTML email, as opposed to being listed as a separate file for download. If false or absent, defaults to false, and it's treated as a regular attachment.",
+       "type": "boolean"
+      },
+      "mimeType": {
+       "description": "Optional. The field representing a content or media type must use IANA MIME type, https://www.iana.org/assignments/media-types/media-types.xhtml. If not provided, defaults to \"application/octet-stream\".",
+       "type": "string"
+      }
+     },
+     "required": [
+      "content"
+     ],
+     "type": "object"
+    }
+   },
+   "description": "Request message for CreateDraft RPC.",
+   "properties": {
+    "attachments": {
+     "description": "Optional. The attachments to include in the email. The combined size of attachments in the message cannot exceed 25MB. If you need to send files larger than 25MB, upload the file to Drive first and then insert the Drive link into `body` or `html_body`.",
+     "items": {
+      "$ref": "#/$defs/Attachment"
+     },
+     "type": "array"
+    },
+    "bcc": {
+     "description": "Optional. The blind carbon copy recipients of the email draft. Each string MUST be a valid plain email address (e.g., \"user@example.com\").",
+     "items": {
+      "type": "string"
+     },
+     "type": "array"
+    },
+    "body": {
+     "description": "Optional. The plain text body content of the email draft. Do NOT format this field with Markdown (such as headers `#`, bold `**`, bullet points `*`, or tables `|`). If formatted rich text is desired, use `html_body` instead. If `html_body` is also provided, this field is treated as the plain-text alternative.",
+     "type": "string"
+    },
+    "cc": {
+     "description": "Optional. The carbon copy recipients of the email draft. Each string MUST be a valid plain email address (e.g., \"user@example.com\").",
+     "items": {
+      "type": "string"
+     },
+     "type": "array"
+    },
+    "htmlBody": {
+     "description": "Optional. The HTML content of the email draft. If provided, this will be used as the rich-text version of the email. Use this field (with valid HTML tags such as ` `, ` ",
+     "type": "string"
+    },
+    "replyToMessageId": {
+     "description": "Optional. The ID of the message to reply to. If provided, this will be used as the reply-to message ID for the email draft, and the `body` and `html_body` will be appended to the original message body.",
+     "type": "string"
+    },
+    "subject": {
+     "description": "Optional. The subject line of the email. Defaults to empty if not provided.",
+     "type": "string"
+    },
+    "to": {
+     "description": "Optional. The primary recipients of the email draft. Each string MUST be a valid plain email address (e.g., \"user@example.com\").",
+     "items": {
+      "type": "string"
+     },
+     "type": "array"
+    }
+   },
+   "type": "object"
+  },
+  "get_thread": {
+   "description": "Request message for GetThread RPC.",
+   "properties": {
+    "messageFormat": {
+     "description": "Optional. Specifies the format of the messages returned within the thread. Defaults to `FULL_CONTENT`. We recommend using `PLAIN_TEXT` to prevent context exhaustion. Note: `MINIMAL` format returns `id`, `snippet`, `subject`, `sender`, `to_recipients`, `cc_recipients`, `bcc_recipients`, `date`, `label_ids`. `METADATA_ONLY` format returns `id`, `sender`, `to_recipients`, `cc_recipients`, `bcc_recipients`, `date`, `label_ids`. `FULL_CONTENT` returns `id`, `snippet`, `subject`, `sender`, `to_recipients`, `cc_recipients`, `bcc_recipients`, `date`, `label_ids`, `attachment_ids`, `plaintext_body`, `html_body`, `attachments`. `PLAIN_TEXT` returns `id`, `snippet`, `subject`, `sender`, `to_recipients`, `cc_recipients`, `bcc_recipients`, `date`, `label_ids`, `attachment_ids`, `plaintext_body`, `attachments` (without `html_body`). `RAW` format is not supported here.",
+     "enum": [
+      "MESSAGE_FORMAT_UNSPECIFIED",
+      "MINIMAL",
+      "FULL_CONTENT",
+      "METADATA_ONLY",
+      "PLAIN_TEXT",
+      "RAW"
+     ],
+     "type": "string",
+     "x-google-enum-descriptions": [
+      "Defaults to FULL_CONTENT.",
+      "Returns `id`, `snippet`, `subject`, `sender`, `to_recipients`, `cc_recipients`, `bcc_recipients`, `date`, `label_ids`, `view_url` (if applicable). Omits `plaintext_body`, `html_body`, `attachment_ids`, `attachments`.",
+      "Returns all message fields (`id`, `snippet`, `subject`, `sender`, `to_recipients`, `cc_recipients`, `bcc_recipients`, `date`, `label_ids`, `attachment_ids`, `plaintext_body`, `html_body`, `attachments`, `view_url`) if applicable.",
+      "Returns `id`, `sender`, `to_recipients`, `cc_recipients`, `bcc_recipients`, `date`, `label_ids`, `view_url` (if applicable). Omits `subject`, `snippet`, `plaintext_body`, `html_body`, `attachment_ids`, `attachments`.",
+      "Returns all information in `MINIMAL` plus `plaintext_body`, `attachment_ids`, and `attachments` (if applicable). If plain text body is not available, converts the HTML body to plain text/markdown. Omits `html_body`.",
+      "Returns the raw MIME message content."
+     ]
+    },
+    "threadId": {
+     "description": "Required. The unique identifier of the thread to fetch.",
+     "type": "string"
+    }
+   },
+   "required": [
+    "threadId"
+   ],
+   "type": "object"
+  },
+  "search_threads": {
+   "description": "Request message for SearchThreads RPC.",
+   "properties": {
+    "includeTrash": {
+     "description": "Optional. Include threads from TRASH in the results. Defaults to false.",
+     "type": "boolean"
+    },
+    "pageSize": {
+     "description": "Optional. The maximum number of threads to return. If unspecified, defaults to 20. The maximum allowed value is 50.",
+     "format": "int32",
+     "type": "integer"
+    },
+    "pageToken": {
+     "description": "Optional. Page token to retrieve a specific page of results in the list. Leave empty to fetch the first page. This is primarily used for pagination to continue fetching results from where the previous `SearchThreads` call left off, especially when the number of threads matching the query exceeds the `page_size` limit.",
+     "type": "string"
+    },
+    "query": {
+     "description": "Optional. A query string to filter the threads. Natural language queries must be pre-converted into Gmail syntax queries to use this tool. If omitted, all threads (excluding spam and trash by default) are listed. Supported Operators by Category: Sender & Recipient: - `from:` — Sent from a specific person. - `to:` — Sent to a specific person. - `cc:` — Specific people in Cc. - `bcc:` — Specific people in Bcc. - `deliveredto:` — Delivered to a specific address. - `list:` — From a specific mailing list. Time & Date: - `after:YYYY/MM/DD` / `newer:YYYY/MM/DD` — Received after a date. - `before:YYYY/MM/DD` / `older:YYYY/MM/DD` — Received before a date. - `older_than:` — Older than a duration (for example, `1y`, `2d`). - `newer_than:` — Newer than a duration. Content: - `subject:` — Words in the subject line. - `has:` — Has specific content types (attachment, drive, youtube, document). - `filename:` — Attachment with a specific name or type. - `\"\"` — Search for an exact word or phrase. (for example, `\"holiday\"`, `\"holiday vacation\"`). Note: Double quotes enforce strict contiguous phrase matching. For topic, discussion, or keyword queries, prefer unquoted keywords (e.g. `partner advertising` instead of `\"partner advertising\"`). - `+` — Match a word exactly. (for example, `+holiday`, `+unicorn`) - `rfc822msgid:` — Specific message ID header. - `AROUND ` — Find words near each other (for example, `holiday AROUND 10 vacation`). Labels & Categories: - `label:` — Under a specific label. The tool accepts label IDs, not display names. Use the `list_labels` tool to get the ID. - `category:` — In a category (primary, social, promotions, updates, forums, reservations, purchases). - `in:` — Search in specific labels (archive, snoozed, trash, sent, inbox). For example, `in:trash`, `in:inbox`. Archived and sent messages are included by default; use `-in:archive` and `-in:sent` to exclude them. Drafts are explicitly excluded by default by the tool. Use `in:inbox` to restrict search to the inbox only. - `has:userlabels` — Has any user labels. - `has:nouserlabels` — Does not have any user labels. - `has:*-star` — Specific star colors (if enabled, for example, `has:yellow-star`). - `in:draft` — Search in drafts. -in:draft means exclude drafts from the search results. - `in:sent` — Search in sent messages. - `in:anywhere` — Search in all folders (including spam and trash). Status: - `is:` — Search by status (important, starred, unread, read, muted). Size: - `size:` — Specific size in bytes. - `larger:` / `smaller:` — Larger or smaller than a size (for example, `10M` for 10 MB). Logic & Grouping: - `AND` — Match all criteria (default behavior). - `OR` or `{ }` — Match one or more criteria (for example, `from:amy OR from:david`, `{from:amy from:david}`). - `-` (minus) — Exclude criteria (for example, `-movie`). - `( )` — Group multiple search terms (for example, `subject:(dinner film)`). Examples: - `subject:OneMCP Update` - `from:user@example.com` - `to:user2@example.com AND newer_than:7d` - `project proposal has:attachment` - `is:unread -in:draft` To prevent overly strict queries, favor concise, keyword-based queries over long subject strings or full sentences. Avoid copying overly detailed subjects from the user prompt verbatim, as this often leads to search misses. Instead, extract the most unique keywords (e.g., subject:amazon \\\"delivery\\\" OR \\\"order\\\" instead of \\\"amazon order\\\"). Use boolean operators to broaden your search coverage. Use OR to search for synonyms or multiple potential senders, and use ( ) for grouping criteria. Note that whitespace between terms acts as an implicit AND.",
+     "type": "string"
+    },
+    "view": {
+     "description": "Optional. Controls the fields populated for threads in the thread list. Defaults to `THREAD_VIEW_MINIMAL`. `THREAD_VIEW_MINIMAL` returns `id`, `snippet`, `subject`, `sender`, `to_recipients`, `cc_recipients`, `bcc_recipients`, `date`, `label_ids`. `THREAD_VIEW_METADATA_ONLY` returns `id`, `sender`, `to_recipients`, `cc_recipients`, `bcc_recipients`, `date`, `label_ids`.",
+     "enum": [
+      "THREAD_VIEW_UNSPECIFIED",
+      "THREAD_VIEW_METADATA_ONLY",
+      "THREAD_VIEW_MINIMAL"
+     ],
+     "type": "string",
+     "x-google-enum-descriptions": [
+      "Maps to THREAD_VIEW_MINIMAL for backward compatibility.",
+      "Returns `id`, `sender`, `to_recipients`, `cc_recipients`, `bcc_recipients`, `date`, `label_ids`, `view_url` (if applicable).",
+      "Returns `id`, `snippet`, `subject`, `sender`, `to_recipients`, `cc_recipients`, `bcc_recipients`, `date`, `label_ids`, `view_url` (if applicable)."
+     ]
+    }
+   },
+   "type": "object"
+  },
+  "send_message": {
+   "$defs": {
+    "Attachment": {
+     "description": "Represents an attachment to be included in an email.",
+     "properties": {
+      "content": {
+       "description": "Required. The base64-encoded content of the attachment.",
+       "format": "byte",
+       "type": "string"
+      },
+      "filename": {
+       "description": "Optional. The name of the file to be attached, e.g. \"invoice.pdf\". For inline attachments, this is used for Content-ID generation. For regular attachments, `filename` is used to specify the filename to email clients. If not provided, the attachment may be received with no name.",
+       "type": "string"
+      },
+      "id": {
+       "description": "Optional. Output only. When present, contains the ID of an external attachment that can be retrieved in a separate `GetMessageAttachment` request.",
+       "readOnly": true,
+       "type": "string"
+      },
+      "inline": {
+       "description": "Optional. If true, this attachment is handled as inline. An inline attachment is a content that is intended to be displayed within the body of an HTML email, as opposed to being listed as a separate file for download. If false or absent, defaults to false, and it's treated as a regular attachment.",
+       "type": "boolean"
+      },
+      "mimeType": {
+       "description": "Optional. The field representing a content or media type must use IANA MIME type, https://www.iana.org/assignments/media-types/media-types.xhtml. If not provided, defaults to \"application/octet-stream\".",
+       "type": "string"
+      }
+     },
+     "required": [
+      "content"
+     ],
+     "type": "object"
+    }
+   },
+   "description": "Request message for Send RPC.",
+   "properties": {
+    "attachments": {
+     "description": "Optional. The attachments to include in the email. The combined size of attachments in the message cannot exceed 25MB. If you need to send files larger than 25MB, upload the file to Drive first and then insert the Drive link into `body` or `html_body`.",
+     "items": {
+      "$ref": "#/$defs/Attachment"
+     },
+     "type": "array"
+    },
+    "bcc": {
+     "description": "Optional. The blind carbon copy recipients of the email. Each string MUST be a valid plain email address (e.g., \"user@example.com\").",
+     "items": {
+      "type": "string"
+     },
+     "type": "array"
+    },
+    "body": {
+     "description": "Optional. The plain text body content of the email. Do NOT format this field with Markdown (such as headers `#`, bold `**`, bullet points `*`, or tables `|`). If formatted rich text is desired, use `html_body` instead. If `html_body` is also provided, this field is treated as the plain-text alternative.",
+     "type": "string"
+    },
+    "cc": {
+     "description": "Optional. The carbon copy recipients of the email. Each string MUST be a valid plain email address (e.g., \"user@example.com\").",
+     "items": {
+      "type": "string"
+     },
+     "type": "array"
+    },
+    "draftId": {
+     "description": "Optional. The unique identifier of an existing draft to send. If provided, the other fields (`to`, `cc`, `bcc`, `subject`, `body`, `html_body`) are ignored, and the specified draft is sent as is.",
+     "type": "string"
+    },
+    "htmlBody": {
+     "description": "Optional. The HTML content of the email. If provided, this will be used as the rich-text version of the email. Use this field (with valid HTML tags such as ` `, ` ",
+     "type": "string"
+    },
+    "replyThreadId": {
+     "description": "Optional. The unique identifier of the thread to send this message in. If provided, the sent message will be threaded under the specified thread. Compatible with all scopes including send-only (gmail.send).",
+     "type": "string"
+    },
+    "replyToMessageId": {
+     "description": "Optional. The unique identifier of the message to reply to. If provided, this message will be threaded in reply to the specified message. Note: Resolving a message by ID requires read permissions (e.g., 'gmail.modify' or 'gmail.compose'). If the caller only has send-only permissions ('gmail.send'), use `reply_thread_id` instead.",
+     "type": "string"
+    },
+    "subject": {
+     "description": "Optional. The subject line of the email.",
+     "type": "string"
+    },
+    "to": {
+     "description": "Optional. The primary recipients of the email. Required if `draft_id` is not provided. Each string MUST be a valid plain email address (e.g., \"user@example.com\").",
+     "items": {
+      "type": "string"
+     },
+     "type": "array"
+    }
+   },
+   "type": "object"
+  }
+ },
+ "Google Calendar": {
+  "create_event": {
+   "$defs": {
+    "Attachment": {
+     "description": "A file attachment for an event.",
+     "properties": {
+      "fileUrl": {
+       "description": "Required. URL link to the attachment.",
+       "type": "string"
+      },
+      "title": {
+       "description": "Optional. Attachment title.",
+       "type": "string"
+      }
+     },
+     "required": [
+      "fileUrl"
+     ],
+     "type": "object"
+    },
+    "Attendee": {
+     "description": "An event attendee.",
+     "properties": {
+      "additionalGuests": {
+       "description": "Optional. Number of additional guests. Default: `0`.",
+       "format": "int32",
+       "type": "integer"
+      },
+      "comment": {
+       "description": "Output only. Response comment.",
+       "readOnly": true,
+       "type": "string"
+      },
+      "displayName": {
+       "description": "Optional. Name.",
+       "type": "string"
+      },
+      "email": {
+       "description": "Required. Attendee's email address.",
+       "type": "string"
+      },
+      "id": {
+       "description": "Output only. Profile ID.",
+       "readOnly": true,
+       "type": "string"
+      },
+      "optionalAttendee": {
+       "description": "Optional. Whether attendee is optional. Default: `false`.",
+       "type": "boolean"
+      },
+      "organizer": {
+       "description": "Output only. Whether attendee is the organizer. Default: `false`.",
+       "readOnly": true,
+       "type": "boolean"
+      },
+      "resource": {
+       "description": "Optional. Whether attendee is a resource (for example, room). Immutable, can only be set when the attendee is initially added. Default: `false`.",
+       "type": "boolean"
+      },
+      "responseStatus": {
+       "description": "Optional. Response status. Possible values are: - `needsAction` - Attendee has not responded to the invitation (recommended for new events). - `declined` - Attendee has declined the invitation. - `tentative` - Attendee has tentatively accepted the invitation. - `accepted` - Attendee has accepted the invitation. ",
+       "type": "string"
+      },
+      "self": {
+       "description": "Output only. Whether this entry represents the calendar on which this copy of the event appears. Default: `false`.",
+       "readOnly": true,
+       "type": "boolean"
+      }
+     },
+     "required": [
+      "email"
+     ],
+     "type": "object"
+    },
+    "GuestPermissions": {
+     "description": "Guest permissions for attendees other than the organizer.",
+     "properties": {
+      "guestsCanInviteOthers": {
+       "description": "Optional. Whether guests can invite others.",
+       "type": "boolean"
+      },
+      "guestsCanModify": {
+       "description": "Optional. Whether guests can modify the event.",
+       "type": "boolean"
+      },
+      "guestsCanSeeGuests": {
+       "description": "Optional. Whether guests can see other guests.",
+       "type": "boolean"
+      }
+     },
+     "type": "object"
+    },
+    "OfficeLocationDetails": {
+     "description": "Details for an office location.",
+     "properties": {
+      "buildingId": {
+       "description": "Optional. The building ID.",
+       "type": "string"
+      },
+      "deskId": {
+       "description": "Optional. The desk ID.",
+       "type": "string"
+      },
+      "floorId": {
+       "description": "Optional. The floor ID.",
+       "type": "string"
+      },
+      "floorSectionId": {
+       "description": "Optional. The floor section ID.",
+       "type": "string"
+      },
+      "label": {
+       "description": "Optional. Human-readable label for the office location.",
+       "type": "string"
+      }
+     },
+     "type": "object"
+    },
+    "Reminder": {
+     "description": "An event reminder.",
+     "properties": {
+      "method": {
+       "description": "Required. Delivery method. Possible values are: - `email` - Reminders are sent via email. - `popup` - Reminders are sent via a UI popup. ",
+       "type": "string"
+      },
+      "minutes": {
+       "description": "Required. Minutes in advance that the reminder is triggered.",
+       "format": "int32",
+       "type": "integer"
+      }
+     },
+     "required": [
+      "method",
+      "minutes"
+     ],
+     "type": "object"
+    },
+    "WorkingLocationProperties": {
+     "description": "Properties for working location events.",
+     "properties": {
+      "customLocationLabel": {
+       "description": "Optional. The label for a custom location. Required if type is `CUSTOM_LOCATION`.",
+       "type": "string"
+      },
+      "officeLocation": {
+       "$ref": "#/$defs/OfficeLocationDetails",
+       "description": "Optional. The office location details. Required if type is `OFFICE_LOCATION`."
+      },
+      "timeZone": {
+       "description": "Output only. Time zone (IANA Time Zone Database name, e.g., \"America/Los_Angeles\").",
+       "readOnly": true,
+       "type": "string"
+      },
+      "type": {
+       "description": "Optional. Working location type.",
+       "enum": [
+        "WORKING_LOCATION_TYPE_UNSPECIFIED",
+        "HOME_OFFICE",
+        "CUSTOM_LOCATION",
+        "OFFICE_LOCATION"
+       ],
+       "type": "string",
+       "x-google-enum-descriptions": [
+        "Unspecified working location type. Will be treated as `HOME_OFFICE`.",
+        "Home office.",
+        "Custom location.",
+        "Office location."
+       ]
+      }
+     },
+     "type": "object"
+    }
+   },
+   "description": "Request message for CreateEvent.",
+   "properties": {
+    "addGoogleMeetUrl": {
+     "description": "Optional. Create and add a Google Meet URL. Default: `false`.",
+     "type": "boolean"
+    },
+    "allDay": {
+     "description": "Optional. Whether the event spans the entire day. If true, start/end times are treated as midnight.",
+     "type": "boolean"
+    },
+    "attachments": {
+     "description": "Optional. File attachments.",
+     "items": {
+      "$ref": "#/$defs/Attachment"
+     },
+     "type": "array"
+    },
+    "attendeeEmails": {
+     "deprecated": true,
+     "description": "Optional. Deprecated: use `attendees` instead.",
+     "items": {
+      "type": "string"
+     },
+     "type": "array"
+    },
+    "attendees": {
+     "description": "Optional. Attendees of the event. For events that are created on the user's primary calendar with at least one other attendee, the current user will automatically be added as an attendee if not already included.",
+     "items": {
+      "$ref": "#/$defs/Attendee"
+     },
+     "type": "array"
+    },
+    "availability": {
+     "description": "Optional. Availability setting.",
+     "enum": [
+      "AVAILABILITY_UNSPECIFIED",
+      "AVAILABILITY_BUSY",
+      "AVAILABILITY_FREE"
+     ],
+     "type": "string",
+     "x-google-enum-descriptions": [
+      "Default. Treated as `BUSY`.",
+      "Blocks time on calendar.",
+      "Does not block time."
+     ]
+    },
+    "calendarId": {
+     "description": "Optional. ID of the calendar to create the event on. Email address - can be resolved using `list_calendars`. Default: primary calendar.",
+     "type": "string"
+    },
+    "colorId": {
+     "description": "Optional. The color of the event. For a list of color IDs, refer to the documentation of the Event resource.",
+     "type": "string"
+    },
+    "description": {
+     "description": "Optional. Description. Can contain HTML.",
+     "type": "string"
+    },
+    "endTime": {
+     "description": "Required. End time (ISO 8601, for example `2026-04-30T11:00:00`). Follows the same rules as `start_time`.",
+     "type": "string"
+    },
+    "eventType": {
+     "description": "Optional. Type of the event.",
+     "enum": [
+      "EVENT_TYPE_UNSPECIFIED",
+      "DEFAULT",
+      "OUT_OF_OFFICE",
+      "FOCUS_TIME",
+      "WORKING_LOCATION",
+      "BIRTHDAY",
+      "FROM_GMAIL"
+     ],
+     "type": "string",
+     "x-google-enum-descriptions": [
+      "Treated as `DEFAULT`.",
+      "Regular event. Default value.",
+      "Out-of-office event. Out-of-office events cannot be all-day.",
+      "Focus-time event. Focus-time events cannot be all-day.",
+      "Working location event.",
+      "Special all-day event with an annual recurrence.",
+      "Event from Gmail. This type of event cannot be created."
+     ]
+    },
+    "googleMeetUrl": {
+     "description": "Optional. Specific Google Meet URL or meeting ID. Overrides `add_google_meet_url`.",
+     "type": "string"
+    },
+    "guestPermissions": {
+     "$ref": "#/$defs/GuestPermissions",
+     "description": "Optional. Guest permissions."
+    },
+    "location": {
+     "description": "Optional. Location.",
+     "type": "string"
+    },
+    "notificationLevel": {
+     "description": "Optional. Which email notification should be sent for this event update.",
+     "enum": [
+      "NOTIFICATION_LEVEL_UNSPECIFIED",
+      "NONE",
+      "EXTERNAL_ONLY",
+      "ALL"
+     ],
+     "type": "string",
+     "x-google-enum-descriptions": [
+      "Default. Treated as `ALL`.",
+      "No notifications.",
+      "External attendees only.",
+      "All attendees."
+     ]
+    },
+    "overrideReminders": {
+     "description": "Optional. Reminders override calendar defaults.",
+     "items": {
+      "$ref": "#/$defs/Reminder"
+     },
+     "type": "array"
+    },
+    "recurrenceData": {
+     "description": "Optional. Recurrence rules as `RRULE`, `RDATE`, or `EXDATE` strings (per RFC 5545).",
+     "items": {
+      "type": "string"
+     },
+     "type": "array"
+    },
+    "startTime": {
+     "description": "Required. Start time (ISO 8601, for example `2026-04-30T10:00:00`). Pass the local time with no UTC offset and no trailing `Z`; only include an offset if the user themselves stated one. If the user named a time zone, leave this without offset and put its IANA name in this request's top-level `timeZone` field.",
+     "type": "string"
+    },
+    "summary": {
+     "description": "Required. Title.",
+     "type": "string"
+    },
+    "timeZone": {
+     "description": "Optional. The time zone the event should be created in, as an IANA Time Zone Database name (for example, `America/Los_Angeles`). Only use this parameter if the user explicitly states a time zone, but always set it when they do, even if that time zone looks like the user's own. Otherwise leave it unset: the server resolves the user's time zone automatically.",
+     "type": "string"
+    },
+    "useDefaultReminders": {
+     "description": "Optional. Whether to use the default reminders for the event. If true, the event will use default reminders. Cannot be set to true if `override_reminders` are specified. If set to false and `override_reminders` is empty or unset, the event will have no reminders. Defaults to false if override_reminders is set, otherwise defaults to true.",
+     "type": "boolean"
+    },
+    "visibility": {
+     "description": "Optional. Visibility of the event. Possible values are: - `default` - Uses the default visibility for events on the calendar. Default value. - `public` - The event is public and event details are visible to all readers of the calendar. - `private` - Only event attendees may view event details. ",
+     "type": "string"
+    },
+    "workingLocationProperties": {
+     "$ref": "#/$defs/WorkingLocationProperties",
+     "description": "Optional. Working location properties (if `eventType` is `WORKING_LOCATION`)."
+    }
+   },
+   "required": [
+    "summary",
+    "startTime",
+    "endTime"
+   ],
+   "type": "object"
+  },
+  "delete_event": {
+   "description": "Request message for DeleteEvent.",
+   "properties": {
+    "calendarId": {
+     "description": "Optional. ID of the calendar containing the event. Email address - can be resolved using `list_calendars`. Default: primary calendar.",
+     "type": "string"
+    },
+    "eventId": {
+     "description": "Required. The ID of the event to delete.",
+     "type": "string"
+    },
+    "notificationLevel": {
+     "description": "Optional. Which email notification should be sent for this event update.",
+     "enum": [
+      "NOTIFICATION_LEVEL_UNSPECIFIED",
+      "NONE",
+      "EXTERNAL_ONLY",
+      "ALL"
+     ],
+     "type": "string",
+     "x-google-enum-descriptions": [
+      "Default. Treated as `ALL`.",
+      "No notifications.",
+      "External attendees only.",
+      "All attendees."
+     ]
+    }
+   },
+   "required": [
+    "eventId"
+   ],
+   "type": "object"
+  },
+  "list_events": {
+   "description": "Request message for ListEvents.",
+   "properties": {
+    "calendarId": {
+     "description": "Optional. ID of the calendar containing the events. Email address - can be resolved using `list_calendars`. Default: primary calendar.",
+     "type": "string"
+    },
+    "endTime": {
+     "description": "Optional. The upper bound of a time range. Must only be set when a specific timeframe or a time in the past is requested by the user. Must be an ISO 8601 timestamp greater than `start_time`. Default: `start_time` + 7 days. Follows the same rules as `start_time`, including when passing `start_time` + 7 days: no UTC offset and no trailing `Z`.",
+     "type": "string"
+    },
+    "eventType": {
+     "description": "Optional. The event types to return. If empty, only the following event types are returned: `DEFAULT`, `OUT_OF_OFFICE`, `FOCUS_TIME`, `FROM_GMAIL`",
+     "items": {
+      "enum": [
+       "EVENT_TYPE_UNSPECIFIED",
+       "DEFAULT",
+       "OUT_OF_OFFICE",
+       "FOCUS_TIME",
+       "WORKING_LOCATION",
+       "BIRTHDAY",
+       "FROM_GMAIL"
+      ],
+      "type": "string",
+      "x-google-enum-descriptions": [
+       "Treated as `DEFAULT`.",
+       "Regular event. Default value.",
+       "Out-of-office event. Out-of-office events cannot be all-day.",
+       "Focus-time event. Focus-time events cannot be all-day.",
+       "Working location event.",
+       "Special all-day event with an annual recurrence.",
+       "Event from Gmail. This type of event cannot be created."
+      ]
+     },
+     "type": "array"
+    },
+    "eventTypeFilter": {
+     "deprecated": true,
+     "description": "Optional. Deprecated: use `event_type` instead.",
+     "items": {
+      "type": "string"
+     },
+     "type": "array"
+    },
+    "fullText": {
+     "description": "Optional. Free-form case-insensitive search matching title, description, location, or attendees. Matches events containing all query terms verbatim (AND search).",
+     "type": "string"
+    },
+    "orderBy": {
+     "description": "Optional. The order in which events should be returned. Possible values are: - `default` - Unspecified, but deterministic ordering (default). - `startTime` - Order by start time ascending. - `startTimeDesc` - Order by start time descending. - `lastModified` - Order by last modification time ascending. ",
+     "type": "string"
+    },
+    "pageSize": {
+     "description": "Optional. Max events per page (default `100`, max `250`). Recommended: `10`.",
+     "format": "int32",
+     "type": "integer"
+    },
+    "pageToken": {
+     "description": "Optional. Next page token. Use the value from the previous page's `nextPageToken`.",
+     "type": "string"
+    },
+    "startTime": {
+     "description": "Optional. The lower bound of a time range. Must only be set when a specific timeframe is requested by the user. Must be an ISO 8601 timestamp less than `end_time`. Default: now. Pass the local time with no UTC offset and no trailing `Z` (for example `2026-04-30T10:00:00`), including when passing now; only include an offset if the user themselves stated one. If the user named a time zone, leave this without offset and put its IANA name in this request's top-level `timeZone` field.",
+     "type": "string"
+    },
+    "timeZone": {
+     "description": "Optional. The time zone (IANA ID, for example `Europe/Zurich`) used to resolve timezone-less dates. Only use this parameter if the user explicitly states a time zone, but always set it when they do, even if that time zone looks like the user's own. Otherwise leave it unset: the server resolves the user's time zone automatically.",
+     "type": "string"
+    }
+   },
+   "type": "object"
+  },
+  "update_event": {
+   "$defs": {
+    "Attachment": {
+     "description": "A file attachment for an event.",
+     "properties": {
+      "fileUrl": {
+       "description": "Required. URL link to the attachment.",
+       "type": "string"
+      },
+      "title": {
+       "description": "Optional. Attachment title.",
+       "type": "string"
+      }
+     },
+     "required": [
+      "fileUrl"
+     ],
+     "type": "object"
+    },
+    "Attendee": {
+     "description": "An event attendee.",
+     "properties": {
+      "additionalGuests": {
+       "description": "Optional. Number of additional guests. Default: `0`.",
+       "format": "int32",
+       "type": "integer"
+      },
+      "comment": {
+       "description": "Output only. Response comment.",
+       "readOnly": true,
+       "type": "string"
+      },
+      "displayName": {
+       "description": "Optional. Name.",
+       "type": "string"
+      },
+      "email": {
+       "description": "Required. Attendee's email address.",
+       "type": "string"
+      },
+      "id": {
+       "description": "Output only. Profile ID.",
+       "readOnly": true,
+       "type": "string"
+      },
+      "optionalAttendee": {
+       "description": "Optional. Whether attendee is optional. Default: `false`.",
+       "type": "boolean"
+      },
+      "organizer": {
+       "description": "Output only. Whether attendee is the organizer. Default: `false`.",
+       "readOnly": true,
+       "type": "boolean"
+      },
+      "resource": {
+       "description": "Optional. Whether attendee is a resource (for example, room). Immutable, can only be set when the attendee is initially added. Default: `false`.",
+       "type": "boolean"
+      },
+      "responseStatus": {
+       "description": "Optional. Response status. Possible values are: - `needsAction` - Attendee has not responded to the invitation (recommended for new events). - `declined` - Attendee has declined the invitation. - `tentative` - Attendee has tentatively accepted the invitation. - `accepted` - Attendee has accepted the invitation. ",
+       "type": "string"
+      },
+      "self": {
+       "description": "Output only. Whether this entry represents the calendar on which this copy of the event appears. Default: `false`.",
+       "readOnly": true,
+       "type": "boolean"
+      }
+     },
+     "required": [
+      "email"
+     ],
+     "type": "object"
+    },
+    "GuestPermissions": {
+     "description": "Guest permissions for attendees other than the organizer.",
+     "properties": {
+      "guestsCanInviteOthers": {
+       "description": "Optional. Whether guests can invite others.",
+       "type": "boolean"
+      },
+      "guestsCanModify": {
+       "description": "Optional. Whether guests can modify the event.",
+       "type": "boolean"
+      },
+      "guestsCanSeeGuests": {
+       "description": "Optional. Whether guests can see other guests.",
+       "type": "boolean"
+      }
+     },
+     "type": "object"
+    },
+    "Reminder": {
+     "description": "An event reminder.",
+     "properties": {
+      "method": {
+       "description": "Required. Delivery method. Possible values are: - `email` - Reminders are sent via email. - `popup` - Reminders are sent via a UI popup. ",
+       "type": "string"
+      },
+      "minutes": {
+       "description": "Required. Minutes in advance that the reminder is triggered.",
+       "format": "int32",
+       "type": "integer"
+      }
+     },
+     "required": [
+      "method",
+      "minutes"
+     ],
+     "type": "object"
+    }
+   },
+   "description": "Request message for UpdateEvent. Fields that are not set will not be updated.",
+   "properties": {
+    "addGoogleMeetUrl": {
+     "description": "Optional. If true, creates or updates a Google Meet URL for the event. Ignored if Meet is disabled.",
+     "type": "boolean"
+    },
+    "addedAttachments": {
+     "description": "Optional. File attachments to add to the event.",
+     "items": {
+      "$ref": "#/$defs/Attachment"
+     },
+     "type": "array"
+    },
+    "addedAttendeeEmails": {
+     "deprecated": true,
+     "description": "Optional. Deprecated: use `added_attendees` instead.",
+     "items": {
+      "type": "string"
+     },
+     "type": "array"
+    },
+    "addedAttendees": {
+     "description": "Optional. Attendees to add to the event.",
+     "items": {
+      "$ref": "#/$defs/Attendee"
+     },
+     "type": "array"
+    },
+    "allDay": {
+     "description": "Optional. Changes the event to all-day. If set, `start_time`/`end_time` must also be provided.",
+     "type": "boolean"
+    },
+    "availability": {
+     "description": "Optional. Whether the event blocks time on the calendar.",
+     "enum": [
+      "AVAILABILITY_UNSPECIFIED",
+      "AVAILABILITY_BUSY",
+      "AVAILABILITY_FREE"
+     ],
+     "type": "string",
+     "x-google-enum-descriptions": [
+      "Default. Treated as `BUSY`.",
+      "Blocks time on calendar.",
+      "Does not block time."
+     ]
+    },
+    "calendarId": {
+     "description": "Optional. ID of the calendar containing the event. Email address - can be resolved using `list_calendars`. Default: primary calendar.",
+     "type": "string"
+    },
+    "colorId": {
+     "description": "Optional. New color of the event. For a list of color IDs, refer to the documentation of the Event resource.",
+     "type": "string"
+    },
+    "description": {
+     "description": "Optional. New description. Can contain HTML.",
+     "type": "string"
+    },
+    "endTime": {
+     "description": "Optional. New end time (ISO 8601). Follows the same rules as `start_time`.",
+     "type": "string"
+    },
+    "eventId": {
+     "description": "Required. Event ID. Can be resolved using `list_events` or `search_events`.",
+     "type": "string"
+    },
+    "googleMeetUrl": {
+     "description": "Optional. Allows attaching an existing Google Meet URL or meeting ID to the event. Overrides the value of `addGoogleMeetUrl`.",
+     "type": "string"
+    },
+    "guestPermissions": {
+     "$ref": "#/$defs/GuestPermissions",
+     "description": "Optional. Guest permission settings for this event."
+    },
+    "location": {
+     "description": "Optional. New location.",
+     "type": "string"
+    },
+    "notificationLevel": {
+     "description": "Optional. Email notification to send for this event update. Default: `ALL`.",
+     "enum": [
+      "NOTIFICATION_LEVEL_UNSPECIFIED",
+      "NONE",
+      "EXTERNAL_ONLY",
+      "ALL"
+     ],
+     "type": "string",
+     "x-google-enum-descriptions": [
+      "Default. Treated as `ALL`.",
+      "No notifications.",
+      "External attendees only.",
+      "All attendees."
+     ]
+    },
+    "overrideReminders": {
+     "description": "Optional. If set, replaces all existing reminders for the event.",
+     "items": {
+      "$ref": "#/$defs/Reminder"
+     },
+     "type": "array"
+    },
+    "removedAttachmentFileUrls": {
+     "description": "Optional. File attachments to remove from the event.",
+     "items": {
+      "type": "string"
+     },
+     "type": "array"
+    },
+    "removedAttendeeEmails": {
+     "description": "Optional. The attendees of the event to remove, as email addresses.",
+     "items": {
+      "type": "string"
+     },
+     "type": "array"
+    },
+    "startTime": {
+     "description": "Optional. New start time (ISO 8601). Preserves duration if updating only start. Pass the local time with no UTC offset and no trailing `Z` (for example `2026-04-30T10:00:00`); only include an offset if the user themselves stated one. If the user named a time zone, leave this without offset and put its IANA name in this request's top-level `timeZone` field.",
+     "type": "string"
+    },
+    "summary": {
+     "description": "Optional. New title.",
+     "type": "string"
+    },
+    "timeZone": {
+     "description": "Optional. The time zone the event should be updated to, as an IANA Time Zone Database name (for example, `America/Los_Angeles`). Only use this parameter if the user explicitly states a time zone, but always set it when they do, even if that time zone looks like the user's own. Otherwise leave it unset: the server resolves the user's time zone automatically.",
+     "type": "string"
+    },
+    "useDefaultReminders": {
+     "description": "Optional. Whether to use the default reminders for the event. If true, the event will use default reminders (and clear override reminders). Cannot be set to true if `override_reminders` are specified. If set to false and `override_reminders` is empty or unset, all reminders are removed.",
+     "type": "boolean"
+    },
+    "visibility": {
+     "description": "Optional. New visibility of the event. Possible values are: - `default` - Uses the default visibility for events on the calendar. Default value. - `public` - Event details are visible to all readers of the calendar. - `private` - The event is private and only event attendees may view event details. ",
+     "type": "string"
+    }
+   },
+   "required": [
+    "eventId"
+   ],
+   "type": "object"
+  }
+ },
+ "shapes": {
+  "calendar_list": {
+   "accessRole": "<tekst>",
+   "defaultReminders": [
+    {
+     "method": "<tekst>",
+     "minutes": 0
+    }
+   ],
+   "events": [
+    {
+     "conferenceData": {},
+     "created": "<tid: YYYY-MM-DDTHH:MM:SSZ, f.eks. 2026-10-08T10:15:00Z>",
+     "creator": {
+      "email": "<tekst>",
+      "self": true
+     },
+     "end": {
+      "dateTime": "<tid: YYYY-MM-DDTHH:MM:SS+HH:MM, f.eks. 2026-10-08T10:15:00+02:00>",
+      "timeZone": "<tekst>"
+     },
+     "eventType": "<tekst>",
+     "htmlLink": "<tekst>",
+     "id": "<tekst>",
+     "organizer": {
+      "email": "<tekst>",
+      "self": true
+     },
+     "overrideReminders": [
+      {
+       "method": "<tekst>",
+       "minutes": 0
+      }
+     ],
+     "start": {
+      "dateTime": "<tid: YYYY-MM-DDTHH:MM:SS+HH:MM, f.eks. 2026-10-08T10:15:00+02:00>",
+      "timeZone": "<tekst>"
+     },
+     "status": "<tekst>",
+     "summary": "<tekst>",
+     "updated": "<tid: YYYY-MM-DDTHH:MM:SSZ, f.eks. 2026-10-08T10:15:00Z>",
+     "useDefaultReminders": false
+    },
+    {
+     "conferenceData": {},
+     "created": "<tid: YYYY-MM-DDTHH:MM:SSZ, f.eks. 2026-10-08T10:15:00Z>",
+     "creator": {
+      "email": "<tekst>",
+      "self": true
+     },
+     "end": {
+      "dateTime": "<tid: YYYY-MM-DDTHH:MM:SS+HH:MM, f.eks. 2026-10-08T10:15:00+02:00>",
+      "timeZone": "<tekst>"
+     },
+     "eventType": "<tekst>",
+     "htmlLink": "<tekst>",
+     "id": "<tekst>",
+     "organizer": {
+      "email": "<tekst>",
+      "self": true
+     },
+     "overrideReminders": [
+      {
+       "method": "<tekst>",
+       "minutes": 0
+      },
+      {
+       "method": "<tekst>",
+       "minutes": 0
+      },
+      {
+       "method": "<tekst>",
+       "minutes": 0
+      }
+     ],
+     "start": {
+      "dateTime": "<tid: YYYY-MM-DDTHH:MM:SS+HH:MM, f.eks. 2026-10-08T10:15:00+02:00>",
+      "timeZone": "<tekst>"
+     },
+     "status": "<tekst>",
+     "summary": "<tekst>",
+     "updated": "<tid: YYYY-MM-DDTHH:MM:SSZ, f.eks. 2026-10-08T10:15:00Z>",
+     "useDefaultReminders": false
+    },
+    {
+     "availability": "<tekst>",
+     "conferenceData": {},
+     "created": "<tid: YYYY-MM-DDTHH:MM:SSZ, f.eks. 2026-10-08T10:15:00Z>",
+     "creator": {
+      "email": "<tekst>",
+      "self": true
+     },
+     "end": {
+      "date": "<tid: YYYY-MM-DDT00:00:00Z (heldagshendelse, felt 'date'), f.eks. 2026-10-10T00:00:00Z>"
+     },
+     "eventType": "<tekst>",
+     "htmlLink": "<tekst>",
+     "id": "<tekst>",
+     "organizer": {
+      "email": "<tekst>",
+      "self": true
+     },
+     "overrideReminders": [
+      {
+       "method": "<tekst>",
+       "minutes": 0
+      }
+     ],
+     "start": {
+      "date": "<tid: YYYY-MM-DDT00:00:00Z (heldagshendelse, felt 'date'), f.eks. 2026-10-10T00:00:00Z>"
+     },
+     "status": "<tekst>",
+     "summary": "<tekst>",
+     "transparency": "<tekst>",
+     "updated": "<tid: YYYY-MM-DDTHH:MM:SSZ, f.eks. 2026-10-08T10:15:00Z>",
+     "useDefaultReminders": false
+    }
+   ],
+   "nextPageToken": "<tekst>",
+   "summary": "<tekst>",
+   "timeZone": "<tekst>",
+   "updated": "<tid: YYYY-MM-DDTHH:MM:SSZ, f.eks. 2026-10-08T10:15:00Z>"
+  },
+  "gmail_search": {
+   "nextPageToken": "<tekst>",
+   "resultCountEstimate": "<tekst>",
+   "threads": [
+    {
+     "id": "<tekst>",
+     "messageCount": 0,
+     "messages": [
+      {
+       "date": "<tid: YYYY-MM-DDTHH:MM:SSZ, f.eks. 2026-10-08T10:15:00Z>",
+       "historyId": "<tekst>",
+       "id": "<tekst>",
+       "internalDate": "<tid: epoch-millisekunder som streng, f.eks. 1791450000000>",
+       "labelIds": [
+        "<tekst>",
+        "<tekst>"
+       ],
+       "sender": "<tekst>",
+       "sizeEstimate": 0,
+       "snippet": "<tekst>",
+       "subject": "<tekst>",
+       "threadId": "<tekst>",
+       "toRecipients": [
+        "<tekst>"
+       ],
+       "viewUrl": "<tekst>"
+      },
+      {
+       "date": "<tid: YYYY-MM-DDTHH:MM:SSZ, f.eks. 2026-10-08T10:15:00Z>",
+       "historyId": "<tekst>",
+       "id": "<tekst>",
+       "internalDate": "<tid: epoch-millisekunder som streng, f.eks. 1791450000000>",
+       "labelIds": [
+        "<tekst>",
+        "<tekst>"
+       ],
+       "sender": "<tekst>",
+       "sizeEstimate": 0,
+       "snippet": "<tekst>",
+       "subject": "<tekst>",
+       "threadId": "<tekst>",
+       "toRecipients": [
+        "<tekst>"
+       ],
+       "viewUrl": "<tekst>"
+      }
+     ],
+     "viewUrl": "<tekst>"
+    },
+    {
+     "id": "<tekst>",
+     "messageCount": 0,
+     "messages": [
+      {
+       "date": "<tid: YYYY-MM-DDTHH:MM:SSZ, f.eks. 2026-10-08T10:15:00Z>",
+       "historyId": "<tekst>",
+       "id": "<tekst>",
+       "internalDate": "<tid: epoch-millisekunder som streng, f.eks. 1791450000000>",
+       "labelIds": [
+        "<tekst>",
+        "<tekst>"
+       ],
+       "sender": "<tekst>",
+       "sizeEstimate": 0,
+       "snippet": "<tekst>",
+       "subject": "<tekst>",
+       "threadId": "<tekst>",
+       "toRecipients": [
+        "<tekst>"
+       ],
+       "viewUrl": "<tekst>"
+      }
+     ],
+     "viewUrl": "<tekst>"
+    }
+   ]
+  }
+ }
+}

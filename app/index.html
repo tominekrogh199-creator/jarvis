@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Jarvis</title>
+<meta name="description" content="Jarvis: et ytre arbeidsminne. Du sier det, Jarvis sorterer det og gir det tilbake når og der du trenger det.">
+<meta name="theme-color" content="#4646d8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Jarvis">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..700&family=Geist+Mono:wght@400..600&display=swap">
+<link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+<div class="sky" aria-hidden="true"></div>
+<div class="app" id="app">
+  <main class="screen" id="screen" tabindex="-1">
+    <div class="top"><span class="clock">Jarvis</span></div>
+    <h1 class="display">Et øyeblikk …</h1>
+  </main>
+  <aside class="wide-aside" id="aside" aria-label="Resten av dagen"></aside>
+</div>
+<div class="dock" id="dock">
+  <form class="capture glass" id="capture" autocomplete="off">
+    <button type="button" class="orb" id="orb" data-state="rolig" aria-label="Åpne samtalen"></button>
+    <label class="sr" for="say">Fang en tanke eller spør</label>
+    <input id="say" name="say" type="text" enterkeyhint="send" placeholder="Fang en tanke, eller spør …">
+    <button type="button" class="mic" id="mic" aria-label="Snakk inn" hidden></button>
+    <button type="submit" class="send" id="send" aria-label="Send til Jarvis"></button>
+  </form>
+  <nav class="tabs glass" id="tabs" aria-label="Steder i appen"></nav>
+</div>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+<div class="layer" id="layer"></div>
+<script type="module" src="./main.js"></script>
+</body>
+</html>
