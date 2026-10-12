@@ -14,7 +14,7 @@ jobs:
         with: { node-version: 20 }
       - run: npm test
       - run: npm run build
-      - run: mkdir site && cp dist/jarvis.html site/index.html && touch site/.nojekyll
+      - run: mkdir site && cp dist/jarvis.html site/index.html && cp -r prototype site/prototype && touch site/.nojekyll
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with: { path: site }

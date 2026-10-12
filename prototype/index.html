@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1b1530">
+<title>Jarvis – prototype</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="bg"><span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span></div>
+<div class="app">
+  <div class="draft-note">Utkast – KI kobles på senere</div>
+
+  <!-- HJEM -->
+  <section class="screen" id="home">
+    <header class="top">
+      <div class="orb small"><span></span></div>
+      <div><p class="hello" id="hello">Hei, Tomine</p><p class="sub" id="today"></p></div>
+    </header>
+    <div class="card glow">
+      <p class="label">Én ting nå</p>
+      <h1 id="oneThing">Svar Emma om gruppeoppgaven</h1>
+      <p class="muted" id="oneWhy">Den tar fem minutter, og så slipper du å tenke på den.</p>
+      <div class="row">
+        <button class="btn primary" data-start="5">Start · 5 min</button>
+        <button class="btn ghost" id="doneBtn">Ferdig ✓</button>
+      </div>
+    </div>
+    <div class="grid">
+      <button class="tile" data-go="dump"><span class="emo">🌀</span><b>Hodet er fullt</b><small>Tøm det ut til meg</small></button>
+      <button class="tile" data-go="morning"><span class="emo">🌅</span><b>Morgensjekk</b><small>Hva er viktigst i dag?</small></button>
+      <button class="tile" data-go="evening"><span class="emo">🌙</span><b>Kveldssjekk</b><small>Legg dagen fra deg</small></button>
+      <div class="tile stat"><span class="emo">✨</span><b id="doneCount">0</b><small>småsteg i dag</small></div>
+    </div>
+  </section>
+
+  <!-- HJERNETØMMING -->
+  <section class="screen" id="dump">
+    <header class="top">
+      <div class="orb small" id="dumpOrb"><span></span></div>
+      <div><p class="hello">Tøm hodet</p><p class="sub">Skriv alt, rotete er helt greit.</p></div>
+    </header>
+    <div class="chat" id="chat"></div>
+    <div class="chips" id="chips">
+      <button class="chip">Jeg har så mye å gjøre og vet ikke hvor jeg skal begynne</button>
+      <button class="chip">Eksamen om to uker, må svare Emma, rommet er kaos og jeg glemte tannlegen</button>
+    </div>
+    <form class="composer" id="composer">
+      <textarea id="dumpText" rows="1" placeholder="Hva surrer i hodet ditt?"></textarea>
+      <button type="button" class="icon" id="mic" title="Snakk">🎙️</button>
+      <button type="submit" class="icon send" title="Send">➤</button>
+    </form>
+  </section>
+
+  <!-- MORGEN -->
+  <section class="screen" id="morning">
+    <div class="hero">
+      <div class="orb"><span></span></div>
+      <h2>God morgen ☀️</h2>
+      <p class="muted">Hvis du bare får gjort én ting i dag, hva skal det være?</p>
+    </div>
+    <div class="card">
+      <p class="label">Hvordan er energien?</p>
+      <div class="seg" id="energy">
+        <button data-v="lav">🪫 Lav</button><button data-v="ok" class="on">🙂 Grei</button><button data-v="hoy">⚡ Høy</button>
+      </div>
+      <p class="label">Dagens viktigste</p>
+      <input id="mainThing" placeholder="F.eks. lese kapittel 4">
+      <div class="chips left">
+        <button class="chip sm">Lese kapittel 4</button><button class="chip sm">Svare Emma</button><button class="chip sm">Rydde pulten</button>
+      </div>
+      <button class="btn primary wide" id="saveMorning">Det er dagens ting</button>
+      <p class="reply" id="morningReply"></p>
+    </div>
+  </section>
+
+  <!-- KVELD -->
+  <section class="screen" id="evening">
+    <div class="hero">
+      <div class="orb night"><span></span></div>
+      <h2>Hvordan gikk dagen? 🌙</h2>
+      <p class="muted" id="eveningAsk">Du ville: <b id="eveningGoal">noe viktig</b></p>
+    </div>
+    <div class="card">
+      <p class="label">Kjenn etter</p>
+      <div class="moods" id="moods">
+        <button data-m="0">😩<small>Tung</small></button><button data-m="1">😕<small>Sånn passe</small></button>
+        <button data-m="2">🙂<small>Grei</small></button><button data-m="3">😊<small>Bra</small></button><button data-m="4">🤩<small>Super</small></button>
+      </div>
+      <p class="label">Ett lite ord om dagen (valgfritt)</p>
+      <textarea id="eveningNote" rows="2" placeholder="Det beste var…"></textarea>
+      <button class="btn primary wide" id="saveEvening">Legg dagen fra meg</button>
+      <div class="reflect" id="reflect"></div>
+    </div>
+  </section>
+
+  <!-- FOKUS -->
+  <div class="focus" id="focus" hidden>
+    <div class="ring"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" class="track"/><circle cx="60" cy="60" r="52" class="prog" id="prog"/></svg><div class="time" id="ftime">5:00</div></div>
+    <p class="focus-task" id="ftask">Bare begynn.</p>
+    <p class="muted">Du trenger ikke bli ferdig. Bare start.</p>
+    <div class="row"><button class="btn ghost" id="fstop">Stopp</button><button class="btn primary" id="fdone">Jeg gjorde det!</button></div>
+  </div>
+
+  <nav class="tabs" id="tabs">
+    <button data-go="home" class="on">🏠<small>Nå</small></button>
+    <button data-go="dump">🌀<small>Tøm</small></button>
+    <button data-go="morning">🌅<small>Morgen</small></button>
+    <button data-go="evening">🌙<small>Kveld</small></button>
+  </nav>
+  <div class="demo">
+    <span>Demo:</span>
+    <button data-go="home">Hjem</button><button data-go="dump">Tøm</button><button data-go="morning">Morgen</button><button data-go="evening">Kveld</button>
+    <button id="reset" title="Nullstill">↺</button>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script src="app.js"></script>
+</body>
+</html>
